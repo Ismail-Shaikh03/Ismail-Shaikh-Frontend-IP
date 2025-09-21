@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { api } from "../api/api.js";
+import DetailsFilm from "./DetailsFilm.jsx";
 
 export default function Top5Film() {
   const [rows, setRows] = useState(null);
   const [err, setErr] = useState("");
+  const [openId, setOpenId] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -29,8 +31,13 @@ export default function Top5Film() {
               <div style={{display:"flex", gap:12, alignItems:"center"}}>
                 <div className="rank">{i+1}</div>
                 <div>
-                  <div style={{fontWeight:700}}>{f.title}</div>
-                  <div className="meta">Rentals: {f.rentals}</div>
+                  <button
+                    onClick={()=>setOpenId(f.film_id)}
+                    style={{ all:"unset", cursor:"pointer", fontWeight:700, color:"#fff" }}
+                  >
+                    {f.title}
+                  </button>
+                  <div className="meta">Rentals: {f.rented ?? f.rentals}</div>
                 </div>
               </div>
               <button
@@ -38,6 +45,7 @@ export default function Top5Film() {
                   background:"transparent", color:"#fff", border:"1px solid #fff",
                   borderRadius:8, padding:"6px 10px", cursor:"pointer"
                 }}
+                onClick={()=>setOpenId(f.film_id)}
               >
                 Details
               </button>
@@ -45,6 +53,8 @@ export default function Top5Film() {
           ))}
         </ul>
       )}
+      <DetailsFilm filmId={openId} open={!!openId} onClose={()=>setOpenId(null)} />
     </section>
   );
 }
+

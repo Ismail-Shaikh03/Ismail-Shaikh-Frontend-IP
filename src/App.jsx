@@ -1,4 +1,5 @@
 import Top5Film from "./components/Top5Film";
+import Top5Actors from "./components/Top5Actors";
 import "./index.css";
 
 export default function App(){
@@ -8,10 +9,12 @@ export default function App(){
       <div className="wrap">
         <div className="main">
           <Top5Film />
+          <Top5Actors />
         </div>
       </div>
     </>
   );
 }
+
 
 

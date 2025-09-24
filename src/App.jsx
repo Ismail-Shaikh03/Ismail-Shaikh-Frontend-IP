@@ -1,18 +1,29 @@
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Top5Film from "./components/Top5Film";
 import Top5Actors from "./components/Top5Actors";
+import FilmPage from "./FilmPage";
+import Nav from "./components/Nav";
 import "./index.css";
 
-export default function App(){
+export default function App() {
   return (
-    <>
-      <div className="navbar">NAV BAR</div>
-      <div className="wrap">
-        <div className="main">
-          <Top5Film />
-          <Top5Actors />
-        </div>
-      </div>
-    </>
+    <Router>
+      <Nav />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <div className="wrap">
+              <div className="main">
+                <Top5Film />
+                <Top5Actors />
+              </div>
+            </div>
+          }
+        />
+        <Route path="/films" element={<FilmPage />} />
+      </Routes>
+    </Router>
   );
 }
 

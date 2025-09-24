@@ -31,7 +31,6 @@ export default function DetailsActor({ actorId, open, onClose, onOpenFilm }) {
             <button onClick={onClose} style={{ border:"1px solid #000", background:"transparent", padding:"6px 10px", borderRadius:8, cursor:"pointer" }}>Close</button>
           </div>
           <div style={{ marginBottom:12, fontSize:14 }}>
-            <strong>Films in inventory:</strong> {data.actor.films}
           </div>
           <div>
             <h3 style={{ margin:"12px 0 8px 0" }}>Top 5 Rented Films</h3>

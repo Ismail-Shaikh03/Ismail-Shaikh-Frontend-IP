@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { api } from "./api/api";
+import DetailsFilm from "./components/DetailsFilm";
 
 export default function FilmPage() {
   const [q, setQ] = useState("");
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
+  const [openId, setOpenId] = useState(null);
   const ctrl = useRef(null);
 
   const trimmed = useMemo(() => q.trim(), [q]);
@@ -18,7 +20,7 @@ export default function FilmPage() {
       setErr("");
       try {
         const { data } = await api.get(`/films/search`, {
-          params: trimmed ? { q: trimmed } : {},
+          params: trimmed ? { q: trimmed } : { limit: 100 },
           signal: ctrl.current.signal
         });
         setRows(data);
@@ -46,16 +48,24 @@ export default function FilmPage() {
         {!loading && rows.length === 0 && <div className="meta">No results</div>}
         <ul className="list" style={{ marginTop: 12 }}>
           {rows.map(f => (
-            <li key={f.film_id} className="card" style={{ alignItems: "center" }}>
+            <li key={f.film_id} className="card" style={{ alignItems: "center", justifyContent:"space-between" }}>
               <div>
                 <div style={{ fontWeight: 700 }}>{f.title}</div>
                 <div className="meta">Year: {f.release_year} • Rating: {f.rating} • {f.length} min • ${Number(f.rental_rate).toFixed(2)}</div>
               </div>
+              <button
+                onClick={() => setOpenId(f.film_id)}
+                style={{ background: "transparent", color: "#fff", border: "1px solid #fff", borderRadius: 8, padding: "6px 10px", cursor: "pointer" }}
+              >
+                Details
+              </button>
             </li>
           ))}
         </ul>
       </div>
+      <DetailsFilm filmId={openId} open={!!openId} onClose={() => setOpenId(null)} />
     </div>
   );
 }
+
 

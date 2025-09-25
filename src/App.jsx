@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Top5Film from "./components/Top5Film";
 import Top5Actors from "./components/Top5Actors";
 import FilmPage from "./FilmPage";
+import CustomerPage from "./CustomerPage"
 import Nav from "./components/Nav";
 import "./index.css";
 
@@ -22,6 +23,7 @@ export default function App() {
           }
         />
         <Route path="/films" element={<FilmPage />} />
+        <Route path="/customers" element={<CustomerPage />} />
       </Routes>
     </Router>
   );

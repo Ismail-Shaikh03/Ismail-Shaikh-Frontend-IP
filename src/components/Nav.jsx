@@ -5,6 +5,7 @@ export default function Nav() {
     <div className="navbar">
       <Link to="/" style={{ marginRight: 20, color: "#fff" }}>Home</Link>
       <Link to="/films" style={{ marginRight: 20, color: "#fff" }}>Films</Link>
+      <Link to="/customers" style={{  color: "#fff" }}>Customers</Link>
     </div>
   );
 }

@@ -53,9 +53,9 @@ export default function FilmPage() {
                 <div style={{ fontWeight: 700 }}>{f.title}</div>
                 <div className="meta">Year: {f.release_year} • Rating: {f.rating} • {f.length} min • ${Number(f.rental_rate).toFixed(2)}</div>
               </div>
-              <button
+              <button className="btn"
                 onClick={() => setOpenId(f.film_id)}
-                style={{ background: "transparent", color: "#fff", border: "1px solid #fff", borderRadius: 8, padding: "6px 10px", cursor: "pointer" }}
+                
               >
                 Details
               </button>

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { api } from "./api/api";
 import DetailsFilm from "./components/DetailsFilm";
+import RentFilm from "./components/RentFilm";
 
 export default function FilmPage() {
   const [q, setQ] = useState("");
@@ -8,6 +9,7 @@ export default function FilmPage() {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
   const [openId, setOpenId] = useState(null);
+  const [rentId, setRentId] = useState(null);
   const ctrl = useRef(null);
 
   const trimmed = useMemo(() => q.trim(), [q]);
@@ -33,6 +35,11 @@ export default function FilmPage() {
     return () => clearTimeout(t);
   }, [trimmed]);
 
+  function onRentClose(success) {
+    setRentId(null);
+    if (success) alert("Rental created");
+  }
+
   return (
     <div className="wrap">
       <div style={{ maxWidth: 900, margin: "0 auto" }}>
@@ -53,19 +60,20 @@ export default function FilmPage() {
                 <div style={{ fontWeight: 700 }}>{f.title}</div>
                 <div className="meta">Year: {f.release_year} • Rating: {f.rating} • {f.length} min • ${Number(f.rental_rate).toFixed(2)}</div>
               </div>
-              <button className="btn"
-                onClick={() => setOpenId(f.film_id)}
-                
-              >
-                Details
-              </button>
+              <div className="btn-group">
+                <button className="btn" onClick={() => setOpenId(f.film_id)}>Details</button>
+                <button className="btn" onClick={() => setRentId(f.film_id)}>Rent</button>
+              </div>
             </li>
           ))}
         </ul>
       </div>
       <DetailsFilm filmId={openId} open={!!openId} onClose={() => setOpenId(null)} />
+      <RentFilm filmId={rentId} open={!!rentId} onClose={onRentClose} />
     </div>
   );
 }
+
+
 
 

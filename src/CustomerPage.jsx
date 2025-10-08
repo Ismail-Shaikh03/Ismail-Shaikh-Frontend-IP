@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { api } from "./api/api";
+import DetailsCustomer from "./components/DetailsCustomer";
 
 export default function CustomerPage() {
   const [q, setQ] = useState("");
@@ -9,6 +10,7 @@ export default function CustomerPage() {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
+  const [openId, setOpenId] = useState(null);
 
   const trimmed = useMemo(() => q.trim(), [q]);
   const totalPages = useMemo(() => Math.max(1, Math.ceil(total / pageSize)), [total, pageSize]);
@@ -50,21 +52,9 @@ export default function CustomerPage() {
         <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 12 }}>
           <div className="meta">Total: {total}</div>
           <div style={{ marginLeft: "auto", display: "flex", gap: 8 }}>
-            <button
-              className="btn"
-              onClick={() => setPage(p => Math.max(1, p - 1))}
-              disabled={page <= 1 || loading}
-            >
-              Prev
-            </button>
+            <button className="btn" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1 || loading}>Prev</button>
             <div className="meta">Page {page} / {totalPages}</div>
-            <button
-              className="btn"
-              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-              disabled={page >= totalPages || loading}
-            >
-              Next
-            </button>
+            <button className="btn" onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page >= totalPages || loading}>Next</button>
           </div>
         </div>
 
@@ -80,12 +70,15 @@ export default function CustomerPage() {
                   ID: {c.customer_id} • {c.email || "no-email"} • Active: {c.active ? "Yes" : "No"} • Created: {new Date(c.create_date).toLocaleDateString()}
                 </div>
               </div>
+              <button className="btn" onClick={() => setOpenId(c.customer_id)}>Details</button>
             </li>
           ))}
         </ul>
       </div>
+      <DetailsCustomer customerId={openId} open={!!openId} onClose={() => setOpenId(null)} />
     </div>
   );
 }
+
 
 

@@ -13,6 +13,7 @@ export default function CustomerPage() {
   const [err, setErr] = useState("");
   const [openId, setOpenId] = useState(null);
   const [addOpen, setAddOpen] = useState(false);
+  const [toast, setToast] = useState({ msg: "", success: false });
 
   const trimmed = useMemo(() => q.trim(), [q]);
   const totalPages = useMemo(() => Math.max(1, Math.ceil(total / pageSize)), [total, pageSize]);
@@ -39,14 +40,44 @@ export default function CustomerPage() {
     return () => { ignore = true; clearTimeout(t); };
   }, [trimmed, page]);
 
+  function notify(msg, success) {
+    setToast({ msg, success });
+    setTimeout(() => setToast({ msg: "", success: false }), 2500);
+  }
+
   function onCreated() {
     setAddOpen(false);
     setPage(1);
     setQ("");
   }
 
+  function handleDeleted(id) {
+    setRows(r => r.filter(x => x.customer_id !== id));
+    setTotal(t => Math.max(0, t - 1));
+  }
+
   return (
     <div className="wrap">
+      {toast.msg && (
+        <div
+          style={{
+            position: "fixed",
+            top: 20,
+            left: "50%",
+            transform: "translateX(-50%)",
+            background: toast.success ? "#28a745" : "#ff3333",
+            color: "#fff",
+            padding: "10px 18px",
+            borderRadius: 8,
+            fontWeight: 700,
+            boxShadow: "0 2px 6px rgba(0,0,0,.3)",
+            zIndex: 9999
+          }}
+        >
+          {toast.msg}
+        </div>
+      )}
+
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
         <h2 style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
           <span>Customers</span>
@@ -81,16 +112,27 @@ export default function CustomerPage() {
                   ID: {c.customer_id} • {c.email || "no-email"} • Active: {c.active ? "Yes" : "No"} • Created: {new Date(c.create_date).toLocaleDateString()}
                 </div>
               </div>
-              <button className="btn" onClick={() => setOpenId(c.customer_id)}>Details</button>
+              <div className="btn-group">
+                <button className="btn" onClick={() => setOpenId(c.customer_id)}>Details</button>
+              </div>
             </li>
           ))}
         </ul>
       </div>
-      <DetailsCustomer customerId={openId} open={!!openId} onClose={() => setOpenId(null)} />
+
+      <DetailsCustomer
+        customerId={openId}
+        open={!!openId}
+        onClose={() => setOpenId(null)}
+        onDeleted={handleDeleted}
+        onNotify={notify}
+      />
       <AddCustomer open={addOpen} onClose={()=>setAddOpen(false)} onCreated={onCreated} />
     </div>
   );
 }
+
+
 
 
 

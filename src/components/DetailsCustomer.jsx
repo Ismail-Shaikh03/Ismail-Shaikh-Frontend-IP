@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { api } from "../api/api";
 
-export default function DetailsCustomer({ customerId, open, onClose }) {
+export default function DetailsCustomer({ customerId, open, onClose, onDeleted, onNotify }) {
   const [data, setData] = useState(null);
   const [err, setErr] = useState("");
+  const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     let ignore = false;
@@ -27,22 +28,34 @@ export default function DetailsCustomer({ customerId, open, onClose }) {
     if (e.target === e.currentTarget) onClose();
   }
 
+  async function onDelete() {
+    const ok = window.confirm("Delete this customer?");
+    if (!ok) return;
+    try {
+      setBusy(true);
+      const { data: result } = await api.delete(`/customers/${customerId}`);
+      if (result.blocked) {
+        onNotify?.(result.message || "Cannot delete", false);
+        return;
+      }
+      if (result.deleted) {
+        onNotify?.(result.message || "Deleted", true);
+        onDeleted?.(customerId, result);
+        onClose();
+      }
+    } catch (e) {
+      onNotify?.(e?.response?.data?.error || "Failed to delete", false);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <div className="backdrop" onClick={onBackdrop}>
       <div className="modal" style={{ position: "relative", maxHeight: "80vh", overflowY: "auto" }}>
         <button
           onClick={onClose}
-          style={{
-            position: "absolute",
-            right: 10,
-            top: 10,
-            background: "transparent",
-            border: "none",
-            fontSize: 20,
-            color: "#fff",
-            cursor: "pointer",
-            fontWeight: "bold",
-          }}
+          style={{ position: "absolute", right: 10, top: 10, background: "transparent", border: "none", fontSize: 20, color: "#fff", cursor: "pointer", fontWeight: "bold" }}
         >
           ×
         </button>
@@ -102,7 +115,8 @@ export default function DetailsCustomer({ customerId, open, onClose }) {
             </div>
 
             <div style={{ display:"flex", justifyContent:"flex-end", gap:10 }}>
-              {/* <button className="btn" onClick={onClose}>Close</button> */}
+              <button className="btn" onClick={onDelete} disabled={busy}>Delete</button>
+              <button className="btn" onClick={onClose}>Close</button>
             </div>
           </div>
         )}
@@ -110,6 +124,10 @@ export default function DetailsCustomer({ customerId, open, onClose }) {
     </div>
   );
 }
+
+
+
+
 
 
 

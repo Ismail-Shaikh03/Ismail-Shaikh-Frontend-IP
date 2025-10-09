@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { api } from "./api/api";
 import DetailsCustomer from "./components/DetailsCustomer";
+import AddCustomer from "./components/AddCustomer";
 
 export default function CustomerPage() {
   const [q, setQ] = useState("");
@@ -11,6 +12,7 @@ export default function CustomerPage() {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
   const [openId, setOpenId] = useState(null);
+  const [addOpen, setAddOpen] = useState(false);
 
   const trimmed = useMemo(() => q.trim(), [q]);
   const totalPages = useMemo(() => Math.max(1, Math.ceil(total / pageSize)), [total, pageSize]);
@@ -37,10 +39,19 @@ export default function CustomerPage() {
     return () => { ignore = true; clearTimeout(t); };
   }, [trimmed, page]);
 
+  function onCreated() {
+    setAddOpen(false);
+    setPage(1);
+    setQ("");
+  }
+
   return (
     <div className="wrap">
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-        <h2>Customers</h2>
+        <h2 style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+          <span>Customers</span>
+          <button className="btn" onClick={()=>setAddOpen(true)}>Add Customer</button>
+        </h2>
 
         <input
           value={q}
@@ -76,9 +87,11 @@ export default function CustomerPage() {
         </ul>
       </div>
       <DetailsCustomer customerId={openId} open={!!openId} onClose={() => setOpenId(null)} />
+      <AddCustomer open={addOpen} onClose={()=>setAddOpen(false)} onCreated={onCreated} />
     </div>
   );
 }
+
 
 
 

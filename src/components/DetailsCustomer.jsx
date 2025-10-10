@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { api } from "../api/api";
+import EditCustomer from "./EditCustomer";
 
 export default function DetailsCustomer({ customerId, open, onClose, onDeleted, onNotify }) {
   const [data, setData] = useState(null);
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
 
   useEffect(() => {
     let ignore = false;
@@ -73,6 +75,7 @@ export default function DetailsCustomer({ customerId, open, onClose, onDeleted, 
               <div className="meta">
                 {data.customer.address}{data.customer.address2 ? `, ${data.customer.address2}` : ""}, {data.customer.district} {data.customer.postal_code || ""}, {data.customer.city}, {data.customer.country}
               </div>
+              <div className="meta">Phone: {data.customer.phone}</div>
               <div className="meta">Created: {new Date(data.customer.create_date).toLocaleDateString()}</div>
             </div>
 
@@ -115,15 +118,44 @@ export default function DetailsCustomer({ customerId, open, onClose, onDeleted, 
             </div>
 
             <div style={{ display:"flex", justifyContent:"flex-end", gap:10 }}>
+              <button className="btn" onClick={() => setEditOpen(true)}>Edit</button>
               <button className="btn" onClick={onDelete} disabled={busy}>Delete</button>
               <button className="btn" onClick={onClose}>Close</button>
             </div>
+
+            <EditCustomer
+              open={editOpen}
+              customer={{
+                customer_id: data.customer.customer_id,
+                first_name: data.customer.first_name,
+                last_name: data.customer.last_name,
+                email: data.customer.email,
+                address: data.customer.address,
+                district: data.customer.district,
+                city: data.customer.city,
+                postal_code: data.customer.postal_code,
+                phone: data.customer.phone
+              }}
+              onClose={() => setEditOpen(false)}
+              onUpdated={async () => {
+                setEditOpen(false);
+                try {
+                  const { data: refreshed } = await api.get(`/customers/${customerId}`);
+                  setData(refreshed);
+                  onNotify?.("Customer updated successfully.", true);
+                } catch {
+                  onNotify?.("Updated, but failed to refresh details.", false);
+                }
+              }}
+            />
           </div>
         )}
       </div>
     </div>
   );
 }
+
+
 
 
 

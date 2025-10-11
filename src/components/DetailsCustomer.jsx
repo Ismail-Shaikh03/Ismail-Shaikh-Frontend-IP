@@ -52,6 +52,21 @@ export default function DetailsCustomer({ customerId, open, onClose, onDeleted, 
     }
   }
 
+  async function onReturn(rentalId) {
+    try {
+      const { data: result } = await api.post(`/returns/${rentalId}`);
+      if (result.returned) {
+        const { data: refreshed } = await api.get(`/customers/${customerId}`);
+        setData(refreshed);
+        onNotify?.(result.message || "Rental marked as returned.", true);
+      } else if (result.alreadyReturned) {
+        onNotify?.(result.message || "Rental already returned.", false);
+      }
+    } catch (e) {
+      onNotify?.(e?.response?.data?.error || "Failed to mark returned", false);
+    }
+  }
+
   return (
     <div className="backdrop" onClick={onBackdrop}>
       <div className="modal" style={{ position: "relative", maxHeight: "80vh", overflowY: "auto" }}>
@@ -92,6 +107,9 @@ export default function DetailsCustomer({ customerId, open, onClose, onDeleted, 
                       <div>
                         <div style={{ fontWeight:700 }}>{r.title}</div>
                         <div className="meta">Rental #{r.rental_id} • Inventory #{r.inventory_id} • Rented: {new Date(r.rental_date).toLocaleString()}</div>
+                      </div>
+                      <div className="btn-group">
+                        <button className="btn" onClick={() => onReturn(r.rental_id)}>Return</button>
                       </div>
                     </li>
                   ))}
@@ -154,6 +172,7 @@ export default function DetailsCustomer({ customerId, open, onClose, onDeleted, 
     </div>
   );
 }
+
 
 
 

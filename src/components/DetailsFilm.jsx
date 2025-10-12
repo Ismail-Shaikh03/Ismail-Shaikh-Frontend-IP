@@ -22,29 +22,83 @@ export default function DetailsFilm({ filmId, open, onClose }) {
 
   return (
     <Details open={open} onClose={onClose}>
-      {!data && !err && <div>Loading…</div>}
-      {err && <div>{err}</div>}
+      {!data && !err && <div className="meta">Loading…</div>}
+      {err && <div className="meta">{err}</div>}
       {data && (
-        <div>
-          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
-            <h2 style={{ margin:0 }}>{data.title}</h2>
-            <button onClick={onClose} style={{ border:"1px solid #000", background:"transparent", padding:"6px 10px", borderRadius:8, cursor:"pointer" }}>Close</button>
+        <div
+          style={{
+            background: "var(--surface, #0A1426)",
+            color: "var(--text, #E9F2FF)",
+            borderRadius: 12,
+            padding: 24,
+            border: "1px solid rgba(255,255,255,0.12)",
+            boxShadow: "0 8px 40px rgba(0,0,0,0.6)",
+            maxHeight: "75vh",
+            overflowY: "auto",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: 16,
+            }}
+          >
+            <h2 style={{ margin: 0, color: "#FFFFFF" }}>{data.title}</h2>
+            <button className="btn" onClick={onClose}>
+              Close
+            </button>
           </div>
-          <div style={{ color:"#333", marginBottom:10 }}>{data.description}</div>
-          <div style={{ display:"flex", gap:16, flexWrap:"wrap", marginBottom:12, fontSize:14 }}>
-            <span><strong>Year:</strong> {data.release_year}</span>
-            <span><strong>Rating:</strong> {data.rating}</span>
-            <span><strong>Length:</strong> {data.length} min</span>
-            <span><strong>Rate:</strong> ${Number(data.rental_rate).toFixed(2)}</span>
+
+          <div
+            style={{
+              color: "#AFC3E6",
+              marginBottom: 16,
+              lineHeight: 1.5,
+            }}
+          >
+            {data.description || "No description available."}
           </div>
-          <div style={{ marginBottom:10, fontSize:14 }}>
-            <strong>Categories:</strong> {data.categories.join(", ")}
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+              gap: 12,
+              fontSize: 14,
+            }}
+          >
+            <div>
+              <strong>Year:</strong> {data.release_year}
+            </div>
+            <div>
+              <strong>Rating:</strong> {data.rating}
+            </div>
+            <div>
+              <strong>Length:</strong> {data.length} min
+            </div>
+            <div>
+              <strong>Rate:</strong> ${Number(data.rental_rate).toFixed(2)}
+            </div>
           </div>
-          <div style={{ fontSize:14 }}>
-            <strong>Actors:</strong> {data.actors.map(a => `${a.first_name} ${a.last_name}`).join(", ")}
+
+          <div style={{ marginTop: 14 }}>
+            <strong>Categories:</strong>{" "}
+            {(data.categories || []).join(", ") || "—"}
+          </div>
+
+          <div style={{ marginTop: 8 }}>
+            <strong>Actors:</strong>{" "}
+            {(data.actors || [])
+              .map((a) => `${a.first_name} ${a.last_name}`)
+              .join(", ") || "—"}
           </div>
         </div>
       )}
     </Details>
   );
 }
+
+
+

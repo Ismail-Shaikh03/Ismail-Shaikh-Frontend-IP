@@ -69,7 +69,7 @@ export default function DetailsCustomer({ customerId, open, onClose, onDeleted, 
 
   return (
     <div className="backdrop" onClick={onBackdrop}>
-      <div className="modal" style={{ position: "relative", maxHeight: "80vh", overflowY: "auto" }}>
+      <div className="modal" style={{ position: "relative", maxHeight: "80vh", overflowY: "auto", width: "min(900px, 92vw)" }}>
         <button
           onClick={onClose}
           style={{ position: "absolute", right: 10, top: 10, background: "transparent", border: "none", fontSize: 20, color: "#fff", cursor: "pointer", fontWeight: "bold" }}
@@ -83,29 +83,64 @@ export default function DetailsCustomer({ customerId, open, onClose, onDeleted, 
         {!data ? (
           <div className="meta">Loading…</div>
         ) : (
-          <div style={{ display: "grid", gap: 14, paddingRight: 10 }}>
+          <div style={{ display: "grid", gap: 16, paddingRight: 10 }}>
             <div>
-              <div style={{ fontWeight: 800 }}>{data.customer.first_name} {data.customer.last_name}</div>
-              <div className="meta">ID: {data.customer.customer_id} • {data.customer.email || "no-email"} • Active: {data.customer.active ? "Yes" : "No"}</div>
-              <div className="meta">
-                {data.customer.address}{data.customer.address2 ? `, ${data.customer.address2}` : ""}, {data.customer.district} {data.customer.postal_code || ""}, {data.customer.city}, {data.customer.country}
+              <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 8 }}>
+                {data.customer.first_name} {data.customer.last_name}
               </div>
-              <div className="meta">Phone: {data.customer.phone}</div>
-              <div className="meta">Created: {new Date(data.customer.create_date).toLocaleDateString()}</div>
+
+              <div className="header-grid">
+                <div className="field">
+                  <div className="label">Customer ID</div>
+                  <div className="value">{data.customer.customer_id}</div>
+                </div>
+                <div className="field">
+                  <div className="label">Active</div>
+                  <div className="value">{data.customer.active ? "Yes" : "No"}</div>
+                </div>
+
+                <div className="field">
+                  <div className="label">Email</div>
+                  <div className="value">{data.customer.email || "—"}</div>
+                </div>
+                <div className="field">
+                  <div className="label">Phone</div>
+                  <div className="value">{data.customer.phone || "—"}</div>
+                </div>
+
+                <div className="field">
+                  <div className="label">Created</div>
+                  <div className="value">{new Date(data.customer.create_date).toLocaleDateString()}</div>
+                </div>
+                <div className="field">
+                  <div className="label">City</div>
+                  <div className="value">{data.customer.city}, {data.customer.country}</div>
+                </div>
+
+                <div className="field" style={{ gridColumn: "1 / -1" }}>
+                  <div className="label">Address</div>
+                  <div className="value">
+                    {data.customer.address}
+                    {data.customer.address2 ? `, ${data.customer.address2}` : ""}
+                    , {data.customer.district}
+                    {data.customer.postal_code ? ` ${data.customer.postal_code}` : ""}
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="hr"></div>
 
             <div>
-              <div style={{ fontWeight: 700, marginBottom: 6 }}>Active Rentals</div>
+              <div style={{ fontWeight: 700, marginBottom: 8 }}>Active Rentals</div>
               {data.activeRentals.length === 0 ? (
                 <div className="meta">None</div>
               ) : (
                 <ul className="list">
                   {data.activeRentals.map(r => (
-                    <li key={r.rental_id} className="card" style={{ alignItems:"center", justifyContent:"space-between" }}>
-                      <div>
-                        <div style={{ fontWeight:700 }}>{r.title}</div>
+                    <li key={r.rental_id} className="card row">
+                      <div className="row-main">
+                        <div className="row-title">{r.title}</div>
                         <div className="meta">Rental #{r.rental_id} • Inventory #{r.inventory_id} • Rented: {new Date(r.rental_date).toLocaleString()}</div>
                       </div>
                       <div className="btn-group">
@@ -118,15 +153,15 @@ export default function DetailsCustomer({ customerId, open, onClose, onDeleted, 
             </div>
 
             <div>
-              <div style={{ fontWeight: 700, margin: "10px 0 6px" }}>Rental History</div>
+              <div style={{ fontWeight: 700, margin: "6px 0 8px" }}>Rental History</div>
               {data.rentalHistory.length === 0 ? (
                 <div className="meta">None</div>
               ) : (
                 <ul className="list">
                   {data.rentalHistory.map(r => (
-                    <li key={r.rental_id} className="card" style={{ alignItems:"center", justifyContent:"space-between" }}>
-                      <div>
-                        <div style={{ fontWeight:700 }}>{r.title}</div>
+                    <li key={r.rental_id} className="card row">
+                      <div className="row-main">
+                        <div className="row-title">{r.title}</div>
                         <div className="meta">Rental #{r.rental_id} • Inventory #{r.inventory_id} • Out: {new Date(r.rental_date).toLocaleString()} • Returned: {new Date(r.return_date).toLocaleString()}</div>
                       </div>
                     </li>
@@ -172,6 +207,8 @@ export default function DetailsCustomer({ customerId, open, onClose, onDeleted, 
     </div>
   );
 }
+
+
 
 
 

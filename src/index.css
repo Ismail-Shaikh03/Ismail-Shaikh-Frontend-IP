@@ -140,6 +140,41 @@ body{
 @media (max-width: 960px){
   .main{grid-template-columns:1fr}
 }
+.header-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+
+.field{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 12px;
+  border-radius:10px;
+  background:rgba(12,21,43,.45);
+  border:1px solid rgba(42,62,103,.55);
+}
+
+.label{
+  min-width:120px;
+  font-size:12px;
+  letter-spacing:.02em;
+  color:var(--muted);
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+
+.value{
+  flex:1;
+  color:var(--text);
+  white-space:normal;
+  word-break:break-all;
+}
+
+@media (max-width: 820px){
+  .header-grid{ grid-template-columns:1fr; }
+}
 
 
 
